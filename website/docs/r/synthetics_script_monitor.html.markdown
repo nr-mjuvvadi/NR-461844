@@ -184,6 +184,43 @@ resource "newrelic_synthetics_script_monitor" "monitor" {
 }
 ```
 
+### Create a monitor and a secure credential
+
+The below example shows how you can create a monitor and attach it to new secure credential using depends_on. Using depends_on constraint, monitor is forced to be created after secure credential is created.
+
+-> **NOTE:** This depends_on needs to be used if we are creating both monitor and secure credentials together.
+
+##### Type: `SCRIPT_BROWSER`
+
+```hcl
+resource "newrelic_synthetics_script_monitor" "example_script_monitor" {
+  name             = "script_monitor"
+  type             = "SCRIPT_BROWSER"
+  period           = "EVERY_HOUR"
+  locations_public = ["US_EAST_1"] 
+  status           = "ENABLED" 
+
+  script = <<EOT
+      var assert = require('assert');
+      var secureCredential = $secure.TEST_SECURE_CREDENTIAL;
+    EOT
+
+  script_language      = "JAVASCRIPT"
+  runtime_type         = "CHROME_BROWSER"
+  runtime_type_version = "100"
+
+  # this is where we introduce the dependency
+  depends_on = [
+    newrelic_synthetics_secure_credential.example_credential
+  ]
+}
+
+resource "newrelic_synthetics_secure_credential" "example_credential" {
+  key   = "TEST_SECURE_CREDENTIAL"
+  value = "some_value"
+}
+```
+
 ## Attributes Reference
 
 The following attributes are exported:
