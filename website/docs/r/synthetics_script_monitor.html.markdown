@@ -186,9 +186,10 @@ resource "newrelic_synthetics_script_monitor" "monitor" {
 
 ### Create a monitor and a secure credential
 
-The below example shows how you can create a monitor and attach it to new secure credential using depends_on. Using depends_on constraint, monitor is forced to be created after secure credential is created.
+The following example shows how to use `depends_on` to create a monitor that uses a new secure credential.
+The `depends_on` creates an explicit dependency between resources to ensure that the secure credential is created before the monitor that uses it.
 
--> **NOTE:** This depends_on needs to be used if we are creating both monitor and secure credentials together.
+-> **NOTE:** Use the `depends_on` when you are creating both monitor and its secure credentials together.
 
 ##### Type: `SCRIPT_BROWSER`
 
